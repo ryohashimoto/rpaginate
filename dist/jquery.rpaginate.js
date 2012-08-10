@@ -8,20 +8,28 @@
         var numberOfItems = self.children().size();
         var numberOfPages = Math.ceil(numberOfItems/opts.showPerPage);
 
-        $('#' + name + 'CurrentPage').val(0);
+        $('#' + name + 'CurrentPage').val(1);
         $('#' + name + 'ShowPerPage').val(opts.showPerPage);
 
-        // var navContent = '<a class="prev-' + name + '-list" href="#!/books/prev_page">&lt;</a>&nbsp;';
-        var navContent = '';
+        var navContent = '<a class="prev-' + name + '-list" href="">&lt;</a>&nbsp;';
         var currentLink = 1;
         while (numberOfPages+1 > currentLink) {
-          navContent += '<a class="' + name + '-list" href="#!/books/pages/' + currentLink + '">' + currentLink + '</a>&nbsp;';
+          navContent += '<a class="' + name + '-list" href="#!/' + name + '/pages/' + currentLink + '">' + currentLink + '</a>&nbsp;';
           currentLink += 1;
         }
-        // navContent += '<a class="next-' + name + '-list" href="#!/books/next_page">&gt;</a>';
+        navContent += '<a class="next-' + name + '-list" href="">&gt;</a>';
 
         $('#' + name + 'Navigation').html(navContent);
         $('#' + name + 'Navigation .' + name + '-list:first').addClass(name + '-active-page');
+
+        $('a.prev-' + name + '-list').live('click', (function() {
+          $.fn.rpagenav.prev(name);
+          return false;
+        }));
+        $('a.next-' + name + '-list').live('click', (function() {
+          $.fn.rpagenav.next(name);
+          return false;
+        }));
         self.children().hide();
         self.children().slice(0, opts.showPerPage).fadeIn('slow');
       }
@@ -36,16 +44,20 @@
   $.fn.rpagenav = {
     prev: function(name) {
       console.log('prev');
-      var newPage = parseInt($('#' + name + '-current-page').val());
-      if ($('.' + name + '-active-page').prev('.' + name + '-list').length == true) {
-        $.fn.rpagenav.goTo(name, newPage);
+      var newPage = parseInt($('#' + name + 'CurrentPage').val()) - 1;
+      var showPerPage = parseInt($('#' + name + 'ShowPerPage').val());
+      console.log(newPage);
+      if (newPage > 0 && newPage <= $('a.'+ name + '-list').size()) {
+        hasher.setHash('/' + name + '/pages/' + newPage);
       }
     },
     next: function(name) {
       console.log('next');
-      var newPage = parseInt($('#' + name + '-current-page').val()) + 1;
-      if ($('.' + name + '-active-page').next('.' + name + '_list').length == true) {
-        $.fn.rpagenav.goTo(name, newPage);
+      var newPage = parseInt($('#' + name + 'CurrentPage').val()) + 1;
+      var showPerPage = parseInt($('#' + name + 'ShowPerPage').val());
+      console.log(newPage);
+      if (newPage > 0 && newPage <= $('a.'+ name + '-list').size()) {
+        hasher.setHash('/' + name + '/pages/' + newPage);
       }
     },
     goTo: function(name, num) {
@@ -62,7 +74,7 @@
           $(this).siblings('.' + name + '-active-page').removeClass(name + '-active-page');
         }
       });
-      $.data($('#' + name), 'currentPage', num);
+      $('#' + name + 'CurrentPage').val(num);
     },
   }
 })(jQuery);

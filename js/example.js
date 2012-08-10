@@ -39,12 +39,6 @@ $(document).ready(function(){
   crossroads.addRoute('/books/pages/{num}', function(num) {
     $('books').rpagenav.goTo('books', num);
   });
-  // crossroads.addRoute('/books/next_page', function() {
-  //   $('books').rpagenav.next('books');
-  // });
-  // crossroads.addRoute('/books/prev_page', function() {
-  //   $('books').rpagenav.prev('books');
-  // });
 
   function parse_hash(new_hash, old_hash) {
     crossroads.parse(new_hash);
